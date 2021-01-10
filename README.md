@@ -18,14 +18,21 @@ Descargar/Clonar el repositorio git y continuación ejecutar en la linea de coma
 *Generar la base de datos en MySql
 
 *configurar .env con credenciales de la base de datos
+
 -php artisan migrate
+
 *Migra las tablas generadas automaticaente y la tabla creada de productos
+
 -php artisan db:seed
+
 *Genera data random para llenar la tabla
+
 -php artisan serve
+
 -npm run watch
 
 en http://localhost:8000/home se encuentra el proyecto deseado
+
 No es necesario registrase ni hacer login
 
 
