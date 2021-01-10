@@ -20,11 +20,11 @@
                     </div>
                     <div class="modal-body">
 
-                            <div class="form-group">
-                                <label for="code">Código</label>
-                                <input type="text" name="code" v-model="product.code" class="form-control" id="code" placeholder="Código del producto">
-                                <small class="form-text text-muted">Código debe ser único</small>
-                            </div>
+                        <div class="form-group">
+                            <label for="code">Código</label>
+                            <input type="text" name="code" v-model="product.code" class="form-control" id="code" placeholder="Código del producto">
+                            <small class="form-text text-muted">Código debe ser único</small>
+                        </div>
 
                         <div class="form-group">
                             <label for="code">Nombre</label>
@@ -39,7 +39,13 @@
                         </div>
                         <div class="form-group">
                             <label for="code">Foto</label>
-                            <input type="text" v-model="product.photo" name="photo" class="form-control" id="photo" placeholder="Foto">
+                            <input type="file" class="form-control" @change="savePhoto">
+                            <figure>
+                                <img with="200" height="200" :src="imagen" alt="Imagen Producto">
+                            </figure>
+                            <figure>
+                                <img width="200" height="200" :src="'http://localhost:8000/'+product.photo">
+                            </figure>
 
                         </div>
 
@@ -66,11 +72,11 @@
             <tbody>
 
             <tr v-for="pro in products" :key="pro.id">
-<!--                <th scope="row">{{pro.id}}</th>-->
+                <!--                <th scope="row">{{pro.id}}</th>-->
                 <td>{{pro.code}}</td>
                 <td>{{pro.name}}</td>
                 <td>{{pro.description}}</td>
-                <td>{{pro.photo}}</td>
+                <td><img width="200" height="200" :src="'http://localhost:8000/'+pro.photo"></td>
                 <td>
                     <button class="btn btn-warning" @click="edit=true; openModal(pro)">Editar</button>
                 </td>
@@ -91,14 +97,14 @@ export default {
             titleModal:'',
             products:[],
             edit:true,
-
+            id:0,
             product:{
                 code:'',
                 name:'',
                 description:'',
                 photo:'',
-            }
-
+            },
+            photoMin:'',
         }
     },
     methods:{
@@ -113,34 +119,49 @@ export default {
         async save(id){
             if(this.edit){
                 const res=await axios.put('/api/products',this.product);
-
-
             }else{
                 const res=await axios.post('/api/products', this.product);
             }
             this.list();
             this.closeModal();
         },
-        openModal(data={}){
-          this.modal=true;
-          if(this.edit){
-              this.titleModal="Modificar Producto";
-              this.product.code=data.code;
-              this.product.name=data.name;
-              this.product.description=data.description;
-              this.product.photo=data.photo;
-          }else{
-              this.titleModal="Crear  Producto";
-              this.product.code='';
-              this.product.name='';
-              this.product.description='';
-              this.product.photo='';
-          }
+        savePhoto(e){
+            let file=e.target.files[0];
+            console.log(file);
+            var fileReader= new FileReader();
+            fileReader.readAsDataURL(e.target.files[0]);
+            fileReader.onload=(e)=>{
+                this.photoMin=e.target.result;
+                this.product.photo=e.target.result;
+            }
+        },
 
+        openModal(data={}){
+            this.modal=true;
+            if(this.edit){
+                this.id=data.id,
+                this.titleModal="Modificar Producto";
+                this.product.code=data.code;
+                this.product.name=data.name;
+                this.product.description=data.description;
+                this.product.photo=data.photo;
+            }else{
+                this.id=data.id,
+                this.titleModal="Crear Producto";
+                this.product.code='';
+                this.product.name='';
+                this.product.description='';
+                this.product.photo='';
+            }
         },
         closeModal(){
             this.modal=false;
         },
+    },
+    computed:{
+        imagen(){
+            return this.photoMin;
+        }
     },
     mounted() {
         console.log('Component de ejemplo')
@@ -156,5 +177,4 @@ export default {
     opacity:1;
     background:rgba(44,38,75,0.849);
 }
-
 </style>

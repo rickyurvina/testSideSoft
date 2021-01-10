@@ -1949,6 +1949,12 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 //
 //
 //
+//
+//
+//
+//
+//
+//
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   data: function data() {
     return {
@@ -1956,12 +1962,14 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
       titleModal: '',
       products: [],
       edit: true,
+      id: 0,
       product: {
         code: '',
         name: '',
         description: '',
         photo: ''
-      }
+      },
+      photoMin: ''
     };
   },
   methods: {
@@ -2057,18 +2065,31 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
         }, _callee3);
       }))();
     },
+    savePhoto: function savePhoto(e) {
+      var _this4 = this;
+
+      var file = e.target.files[0];
+      console.log(file);
+      var fileReader = new FileReader();
+      fileReader.readAsDataURL(e.target.files[0]);
+
+      fileReader.onload = function (e) {
+        _this4.photoMin = e.target.result;
+        _this4.product.photo = e.target.result;
+      };
+    },
     openModal: function openModal() {
       var data = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
       this.modal = true;
 
       if (this.edit) {
-        this.titleModal = "Modificar Producto";
+        this.id = data.id, this.titleModal = "Modificar Producto";
         this.product.code = data.code;
         this.product.name = data.name;
         this.product.description = data.description;
         this.product.photo = data.photo;
       } else {
-        this.titleModal = "Crear  Producto";
+        this.id = data.id, this.titleModal = "Crear Producto";
         this.product.code = '';
         this.product.name = '';
         this.product.description = '';
@@ -2077,6 +2098,11 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
     },
     closeModal: function closeModal() {
       this.modal = false;
+    }
+  },
+  computed: {
+    imagen: function imagen() {
+      return this.photoMin;
     }
   },
   mounted: function mounted() {
@@ -6595,7 +6621,7 @@ __webpack_require__.r(__webpack_exports__);
 
 var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0___default()(function(i){return i[1]});
 // Module
-___CSS_LOADER_EXPORT___.push([module.id, "\n.show{\n    display:list-item;\n    opacity:1;\n    background:rgba(44,38,75,0.849);\n}\n\n", ""]);
+___CSS_LOADER_EXPORT___.push([module.id, "\n.show{\n    display:list-item;\n    opacity:1;\n    background:rgba(44,38,75,0.849);\n}\n", ""]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 
@@ -38750,7 +38776,7 @@ var render = function() {
           }
         }
       },
-      [_vm._v("\n            Nuevo producto\n        ")]
+      [_vm._v("\n        Nuevo producto\n    ")]
     ),
     _vm._v(" "),
     _c(
@@ -38906,31 +38932,31 @@ var render = function() {
                 _c("label", { attrs: { for: "code" } }, [_vm._v("Foto")]),
                 _vm._v(" "),
                 _c("input", {
-                  directives: [
-                    {
-                      name: "model",
-                      rawName: "v-model",
-                      value: _vm.product.photo,
-                      expression: "product.photo"
-                    }
-                  ],
                   staticClass: "form-control",
-                  attrs: {
-                    type: "text",
-                    name: "photo",
-                    id: "photo",
-                    placeholder: "Foto"
-                  },
-                  domProps: { value: _vm.product.photo },
-                  on: {
-                    input: function($event) {
-                      if ($event.target.composing) {
-                        return
-                      }
-                      _vm.$set(_vm.product, "photo", $event.target.value)
+                  attrs: { type: "file" },
+                  on: { change: _vm.savePhoto }
+                }),
+                _vm._v(" "),
+                _c("figure", [
+                  _c("img", {
+                    attrs: {
+                      with: "200",
+                      height: "200",
+                      src: _vm.imagen,
+                      alt: "Imagen Producto"
                     }
-                  }
-                })
+                  })
+                ]),
+                _vm._v(" "),
+                _c("figure", [
+                  _c("img", {
+                    attrs: {
+                      width: "200",
+                      height: "200",
+                      src: "http://localhost:8000/" + _vm.product.photo
+                    }
+                  })
+                ])
               ])
             ]),
             _vm._v(" "),
@@ -38981,7 +39007,15 @@ var render = function() {
             _vm._v(" "),
             _c("td", [_vm._v(_vm._s(pro.description))]),
             _vm._v(" "),
-            _c("td", [_vm._v(_vm._s(pro.photo))]),
+            _c("td", [
+              _c("img", {
+                attrs: {
+                  width: "200",
+                  height: "200",
+                  src: "http://localhost:8000/" + pro.photo
+                }
+              })
+            ]),
             _vm._v(" "),
             _c("td", [
               _c(
