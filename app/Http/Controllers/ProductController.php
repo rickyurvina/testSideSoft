@@ -15,7 +15,12 @@ class ProductController extends Controller
     public function index()
     {
         //
-        return Product::get();
+        try{
+            return Product::get();
+
+        }catch(\Throwable $e){
+            return $e;
+        }
     }
 
     /**
@@ -27,21 +32,22 @@ class ProductController extends Controller
     public function store(Request $request)
     {
         //
-        $exploded=explode(',',$request->photo);
-        $decoded=base64_decode($exploded[1]);
-        if (str_contains($exploded[0],'jpeg')){
-            $extension='jpg';
-        }else{
-            $extension='png';
+        try{
+            $exploded=explode(',',$request->photo);
+            $decoded=base64_decode($exploded[1]);
+            if (str_contains($exploded[0],'jpeg')){
+                $extension='jpg';
+            }else{
+                $extension='png';
+            }
+            $fileName=rand(0,500).'.'.$extension;
+            $path=public_path().'/'.$fileName;
+            file_put_contents($path, $decoded);
+            $product= new Product;
+            $product->create($request->except('photo')+['photo'=>$fileName]);
+        }catch(\Throwable $e){
+            return $e;
         }
-
-        $fileName=rand(0,500).'.'.$extension;
-        $path=public_path().'/'.$fileName;
-        file_put_contents($path, $decoded);
-
-        $product= new Product;
-        $product->create($request->except('photo')+['photo'=>$fileName]);
-
     }
 
     /**
@@ -53,6 +59,11 @@ class ProductController extends Controller
     public function show(Product $product)
     {
         //
+        try{
+
+        }catch(\Throwable $e){
+            return $e;
+        }
         return $product;
     }
 
@@ -66,7 +77,12 @@ class ProductController extends Controller
     public function update(Request $request, Product $product)
     {
         //
-        $product->update($request->except('photo'));
+        try{
+            $product->update($request->except('photo'));
+
+        }catch(\Throwable $e){
+            return $e;
+        }
 //        $exploded=explode(',',$request->photo);
 //        $decoded=base64_decode($exploded[1]);
 //        if (str_contains($exploded[0],'jpeg')){
@@ -92,6 +108,12 @@ class ProductController extends Controller
     public function destroy(Product $product)
     {
         //
-        $product->delete();
+        try{
+            $product->delete();
+
+        }catch(\Throwable $e){
+            return $e;
+        }
+
     }
 }
