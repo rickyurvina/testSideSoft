@@ -15,6 +15,7 @@ Descargar/Clonar el repositorio git y continuación ejecutar en la linea de coma
 - npm install
 - php artisan key:generate
 - copy .env.example .env
+
 *Generar la base de datos en MySql
 
 *configurar .env con credenciales de la base de datos
