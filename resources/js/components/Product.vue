@@ -4,26 +4,49 @@
         <hr>
 
         <!-- Button trigger modal -->
-        <button type="button" class="btn btn-primary">
+        <button type="button"  class="btn btn-primary my-4" @click="edit=false; openModal()">
             Nuevo producto
         </button>
 
         <!-- Modal -->
-        <div class="modal fade" data-backdrop="static" data-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div class="modal fade" :class="{show:modal}" data-backdrop="static" data-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title" id="staticBackdropLabel">Modal title</h5>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <h5 class="modal-title" id="staticBackdropLabel">{{titleModal}}</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close" @click="closeModal()">
                             <span aria-hidden="true">&times;</span>
                         </button>
                     </div>
                     <div class="modal-body">
-                        ...
+
+                            <div class="form-group">
+                                <label for="code">Código</label>
+                                <input type="text" name="code" v-model="product.code" class="form-control" id="code" placeholder="Código del producto">
+                                <small class="form-text text-muted">Código debe ser único</small>
+                            </div>
+
+                        <div class="form-group">
+                            <label for="code">Nombre</label>
+                            <input type="text" v-model="product.name" name="name" class="form-control" id="name" placeholder="Nombre del producto">
+
+                        </div>
+                        <div class="form-group">
+                            <label for="code">Descripcción</label>
+
+                            <textarea class="form-control" v-model="product.description" name="description" id="description" placeholder="Descripcción del producto" rows="3"></textarea>
+
+                        </div>
+                        <div class="form-group">
+                            <label for="code">Foto</label>
+                            <input type="text" v-model="product.photo" name="photo" class="form-control" id="photo" placeholder="Foto">
+
+                        </div>
+
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                        <button type="button" class="btn btn-primary">Understood</button>
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal" @click="closeModal()">Cancelar</button>
+                        <button type="button" class="btn btn-success" @click="save()">Guardar</button>
                     </div>
                 </div>
             </div>
@@ -31,7 +54,7 @@
 
         <table class="table table-striped">
             <thead class="thead-dark">
-            <tr>
+            <tr class="text-center">
                 <th scope="col">ID</th>
                 <th scope="col">Code</th>
                 <th scope="col">Name</th>
@@ -43,13 +66,13 @@
             <tbody>
 
             <tr v-for="pro in products" :key="pro.id">
-                <th scope="row">{{pro.id}}</th>
+<!--                <th scope="row">{{pro.id}}</th>-->
                 <td>{{pro.code}}</td>
                 <td>{{pro.name}}</td>
                 <td>{{pro.description}}</td>
                 <td>{{pro.photo}}</td>
                 <td>
-                    <button class="btn btn-warning">Editar</button>
+                    <button class="btn btn-warning" @click="edit=true; openModal(pro)">Editar</button>
                 </td>
                 <td>
                     <button @click="deleteP(pro.id)" class="btn btn-danger">Eliminar</button>
@@ -64,7 +87,17 @@
 export default {
     data(){
         return {
+            modal:false,
+            titleModal:'',
             products:[],
+            edit:true,
+
+            product:{
+                code:'',
+                name:'',
+                description:'',
+                photo:'',
+            }
 
         }
     },
@@ -77,6 +110,37 @@ export default {
             const res= await axios.delete('/api/products/'+id);
             this.list();
         },
+        async save(id){
+            if(this.edit){
+                const res=await axios.put('/api/products',this.product);
+
+
+            }else{
+                const res=await axios.post('/api/products', this.product);
+            }
+            this.list();
+            this.closeModal();
+        },
+        openModal(data={}){
+          this.modal=true;
+          if(this.edit){
+              this.titleModal="Modificar Producto";
+              this.product.code=data.code;
+              this.product.name=data.name;
+              this.product.description=data.description;
+              this.product.photo=data.photo;
+          }else{
+              this.titleModal="Crear  Producto";
+              this.product.code='';
+              this.product.name='';
+              this.product.description='';
+              this.product.photo='';
+          }
+
+        },
+        closeModal(){
+            this.modal=false;
+        },
     },
     mounted() {
         console.log('Component de ejemplo')
@@ -87,5 +151,10 @@ export default {
 }
 </script>
 <style>
+.show{
+    display:list-item;
+    opacity:1;
+    background:rgba(44,38,75,0.849);
+}
 
 </style>
