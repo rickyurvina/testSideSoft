@@ -118,7 +118,7 @@ export default {
         },
         async save(id){
             if(this.edit){
-                const res=await axios.put('/api/products',this.product);
+                const res=await axios.put('/api/products/'+this.id,this.product);
             }else{
                 const res=await axios.post('/api/products', this.product);
             }

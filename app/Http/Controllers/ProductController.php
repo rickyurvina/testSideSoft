@@ -66,7 +66,21 @@ class ProductController extends Controller
     public function update(Request $request, Product $product)
     {
         //
-        $product->update($request->all());
+        $product->update($request->except('photo'));
+//        $exploded=explode(',',$request->photo);
+//        $decoded=base64_decode($exploded[1]);
+//        if (str_contains($exploded[0],'jpeg')){
+//            $extension='jpg';
+//        }else{
+//            $extension='png';
+//        }
+//
+//        $fileName=rand(0,500).'.'.$extension;
+//        $path=public_path().'/'.$fileName;
+//        file_put_contents($path, $decoded);
+//
+//        $product= new Product;
+//        $product->update($request->except('photo')+['photo'=>$fileName]);
     }
 
     /**

@@ -2038,7 +2038,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                 }
 
                 _context3.next = 3;
-                return axios.put('/api/products', _this3.product);
+                return axios.put('/api/products/' + _this3.id, _this3.product);
 
               case 3:
                 res = _context3.sent;
